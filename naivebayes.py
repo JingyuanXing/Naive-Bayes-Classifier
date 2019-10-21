@@ -28,7 +28,7 @@ class NaiveBayes(object):
         probY_R = countY_R/N
         probY_B = countY_B/N
 
-        # create dictionary of each word count: count(X=xi|Y=R) and count(X=xi|Y=B)
+        # create dictionary of each word count: count(X=xi and Y=R) and count(X=xi and Y=B)
         countX_givenR = Counter()
         countX_givenB = Counter()
         for line in trainLL:
@@ -37,8 +37,16 @@ class NaiveBayes(object):
             else:
                 countX_givenB += Counter(line[1:])
 
-        print("X given R: ", countX_givenR)
-        print("X given B: ", countX_givenB)
+        # create dictionary of each word probability: 
+        # prob(X=xi | Y=R) = count(X=xi and Y=R)/ count(Y=R)
+        # prob(X=xi | Y=B) = count(X=xi and Y=B)/ count(Y=B)
+        probX_givenR = Counter()
+        probX_givenB = Counter()
+        for k in countX_givenR:
+            probX_givenR[k] = countX_givenR[k]/countY_R
+        for k in countX_givenB:
+            probX_givenB[k] = countX_givenB[k]/countY_B
+    
         pass
 
     def estimateLogProbability(self, sentence):
