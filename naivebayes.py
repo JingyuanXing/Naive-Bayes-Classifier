@@ -8,6 +8,25 @@ class NaiveBayes(object):
         Initializes a NaiveBayes object and the naive bayes classifier.
         :param trainingData: full text from training file as a single large string
         """
+
+        # make trainingData into a string list list
+        trainLL = []
+        for line in trainingData.splitlines():
+            trainLL.append(line.split())
+
+        # find P(Y=R) and P(Y=B)
+        countY_R = 0
+        countY_B = 0
+        for line in trainLL:
+            if line[0] == "RED":
+                countY_R += len(line)-1 # total number of words in this line, minus the dummy "RED"
+            else:
+                countY_B += len(line)-1 # total number of words in this line, minus the dummy "BLUE"
+        N = countY_R + countY_B
+        probY_R = countY_R/N
+        probY_B = countY_B/N
+
+        #
         pass
 
     def estimateLogProbability(self, sentence):
