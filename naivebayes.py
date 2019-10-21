@@ -2,6 +2,7 @@ import sys
 import io
 from collections import Counter
 from collections import defaultdict
+import math
 
 class NaiveBayes(object):
 
@@ -25,8 +26,8 @@ class NaiveBayes(object):
             else:
                 countY_B += len(line)-1 # total number of words in this line, minus the dummy "BLUE"
         N = countY_R + countY_B
-        probY_R = countY_R/N
-        probY_B = countY_B/N
+        self.probY_R = countY_R/N
+        self.probY_B = countY_B/N
 
         # create dictionary of each word count: count(X=xi and Y=R) and count(X=xi and Y=B)
         countX_givenR = Counter()
@@ -40,12 +41,12 @@ class NaiveBayes(object):
         # create dictionary of each word probability: 
         # prob(X=xi | Y=R) = count(X=xi and Y=R)/ count(Y=R)
         # prob(X=xi | Y=B) = count(X=xi and Y=B)/ count(Y=B)
-        probX_givenR = Counter()
-        probX_givenB = Counter()
+        self.probX_givenR = Counter()
+        self.probX_givenB = Counter()
         for k in countX_givenR:
-            probX_givenR[k] = countX_givenR[k]/countY_R
+            self.probX_givenR[k] = countX_givenR[k]/countY_R
         for k in countX_givenB:
-            probX_givenB[k] = countX_givenB[k]/countY_B
+            self.probX_givenB[k] = countX_givenB[k]/countY_B
     
         pass
 
@@ -56,7 +57,27 @@ class NaiveBayes(object):
         :param sentence: the test sentence, as a single string without label
         :return: a dictionary containing log probability for each category
         """
-        return {'red': 0, 'blue': 0}
+
+        # make test sentence into a string list
+        testL = sentence.split()
+        # print(testL[1:])
+
+        # find the product of P(Y=R) * \prod{P(X=xi | Y=R)}
+        #                 and P(Y=B) * \prod{P(X=xi | Y=R)}
+        test_probX_givenR = self.probY_R
+        test_probX_givenB = self.probY_B
+        for word in testL:
+            if self.probX_givenR[word] == 0:
+                test_probX_givenR += math.log(1/len(self.probX_givenR))
+            else:
+                test_probX_givenR += math.log(self.probX_givenR[word])
+
+            if self.probX_givenB[word] == 0:
+                test_probX_givenB += math.log(1/len(self.probX_givenB))
+            else:
+                test_probX_givenB += math.log(self.probX_givenB[word])
+                
+        return {'red': test_probX_givenR, 'blue': test_probX_givenB}
 
     def testModel(self, testData):
         """
@@ -98,6 +119,7 @@ if __name__ == '__main__':
         + "\nprecision for blue: " + str(evaluation['precision for blue'])
         + "\nrecall for red: " + str(evaluation['recall for red'])
         + "\nrecall for blue: " + str(evaluation['recall for blue']))
+    model.estimateLogProbability(test_data.splitlines()[0])
 
 
 
