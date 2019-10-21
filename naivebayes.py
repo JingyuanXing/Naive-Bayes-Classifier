@@ -60,7 +60,6 @@ class NaiveBayes(object):
 
         # make test sentence into a string list
         testL = sentence.split()
-        # print(testL[1:])
 
         # find the product of P(Y=R) * \prod{P(X=xi | Y=R)}
         #                 and P(Y=B) * \prod{P(X=xi | Y=R)}
@@ -86,11 +85,54 @@ class NaiveBayes(object):
         :param testData: the test file as a single string
         :return: a dictionary containing each item as identified by the key
         """
-        return {'overall accuracy': 0,
-                'precision for red': 0,
-                'precision for blue': 0,
-                'recall for red': 0,
-                'recall for blue': 0}
+
+        # make testData into a string list list
+        testLL = []
+        for line in (testData.splitlines()):
+            testLL.append(line)
+
+        # predict and test each line
+        TP_R, TN_R, FP_R, FN_R = 0, 0, 0, 0
+        TP_B, TN_B, FP_B, FN_B = 0, 0, 0, 0
+        for line in testLL:
+            actualClass = line.split()[0]
+            if self.estimateLogProbability(line)['red'] > self.estimateLogProbability(line)['blue']:
+                predictedClass = "RED"
+            else:
+                predictedClass = "BLUE"
+
+            # calculate
+            if (actualClass == "RED" and predictedClass == "RED"): 
+                TP_R += 1
+                TN_B += 1
+            elif (actualClass == "RED" and predictedClass == "BLUE"):
+                FN_R += 1
+                FP_B += 1
+            elif (actualClass == "BLUE" and predictedClass == "RED"):
+                FP_R += 1
+                FN_B += 1
+            elif (actualClass == "BLUE" and predictedClass == "BLUE"):
+                TN_R += 1
+                TP_B += 1
+
+        # overall accuracy, calculate use either red or blue is fine
+        accu_overall = (TP_R+TN_R)/(TP_R+TN_R+FN_R+FP_R)
+        # precision for red
+        preci_red = TP_R/(TP_R+FP_R)
+        # precison for blue
+        preci_blue = TP_B/(TP_B+FP_B)
+        # recall for red
+        recall_red = TP_R/(TP_R+FN_R)
+        # recall for blue
+        recall_blue = TP_B/(TP_B+FN_B)
+
+
+
+        return {'overall accuracy': accu_overall,
+                'precision for red': preci_red,
+                'precision for blue': preci_blue,
+                'recall for red': recall_red,
+                'recall for blue': recall_blue}
 
 """
 The following code is used only on your local machine. The autograder will only use the functions in the NaiveBayes class.            
@@ -119,6 +161,7 @@ if __name__ == '__main__':
         + "\nprecision for blue: " + str(evaluation['precision for blue'])
         + "\nrecall for red: " + str(evaluation['recall for red'])
         + "\nrecall for blue: " + str(evaluation['recall for blue']))
+    
     model.estimateLogProbability(test_data.splitlines()[0])
 
 
