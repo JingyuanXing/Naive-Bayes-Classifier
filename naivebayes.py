@@ -1,5 +1,7 @@
 import sys
 import io
+from collections import Counter
+from collections import defaultdict
 
 class NaiveBayes(object):
 
@@ -14,7 +16,7 @@ class NaiveBayes(object):
         for line in trainingData.splitlines():
             trainLL.append(line.split())
 
-        # find P(Y=R) and P(Y=B)
+        # find count(Y=R), count(Y=B), total N, P(Y=R), P(Y=B)
         countY_R = 0
         countY_B = 0
         for line in trainLL:
@@ -26,7 +28,17 @@ class NaiveBayes(object):
         probY_R = countY_R/N
         probY_B = countY_B/N
 
-        #
+        # create dictionary of each word count: count(X=xi|Y=R) and count(X=xi|Y=B)
+        countX_givenR = Counter()
+        countX_givenB = Counter()
+        for line in trainLL:
+            if line[0] == "RED":
+                countX_givenR += Counter(line[1:])
+            else:
+                countX_givenB += Counter(line[1:])
+
+        print("X given R: ", countX_givenR)
+        print("X given B: ", countX_givenB)
         pass
 
     def estimateLogProbability(self, sentence):
