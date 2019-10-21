@@ -1,0 +1,1 @@
+I didn't collaborate with other people. Did everything on my own.

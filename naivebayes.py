@@ -96,10 +96,12 @@ class NaiveBayes(object):
         TP_B, TN_B, FP_B, FN_B = 0, 0, 0, 0
         for line in testLL:
             actualClass = line.split()[0]
+            # print(self.estimateLogProbability(line)['red'], self.estimateLogProbability(line)['blue'])
             if self.estimateLogProbability(line)['red'] > self.estimateLogProbability(line)['blue']:
                 predictedClass = "RED"
             else:
                 predictedClass = "BLUE"
+            # print(actualClass, predictedClass)
 
             # calculate
             if (actualClass == "RED" and predictedClass == "RED"): 
@@ -118,11 +120,11 @@ class NaiveBayes(object):
         # overall accuracy, calculate use either red or blue is fine
         accu_overall = (TP_R+TN_R)/(TP_R+TN_R+FN_R+FP_R)
         # precision for red
-        preci_red = TP_R/(TP_R+FP_R)
+        preci_red = (TP_R)/(TP_R+FP_R)
         # precison for blue
         preci_blue = TP_B/(TP_B+FP_B)
         # recall for red
-        recall_red = TP_R/(TP_R+FN_R)
+        recall_red = (TP_R)/(TP_R+FN_R)
         # recall for blue
         recall_blue = TP_B/(TP_B+FN_B)
 
