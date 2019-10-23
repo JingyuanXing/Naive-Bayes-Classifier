@@ -18,16 +18,16 @@ class NaiveBayes(object):
             trainLL.append(line.split())
 
         # find count(Y=R), count(Y=B), total N, P(Y=R), P(Y=B)
-        countY_R = 0
-        countY_B = 0
+        self.countY_R = 0
+        self.countY_B = 0
         for line in trainLL:
             if line[0] == "RED":
-                countY_R += len(line)-1 # total number of words in this line, minus the dummy "RED"
+                self.countY_R += len(line)-1 # total number of words in this line, minus the dummy "RED"
             else:
-                countY_B += len(line)-1 # total number of words in this line, minus the dummy "BLUE"
-        N = countY_R + countY_B
-        self.probY_R = countY_R/N
-        self.probY_B = countY_B/N
+                self.countY_B += len(line)-1 # total number of words in this line, minus the dummy "BLUE"
+        N = self.countY_R + self.countY_B
+        self.probY_R = self.countY_R/N
+        self.probY_B = self.countY_B/N
 
         # create dictionary of each word count: count(X=xi and Y=R) and count(X=xi and Y=B)
         countX_givenR = Counter()
@@ -44,9 +44,9 @@ class NaiveBayes(object):
         self.probX_givenR = Counter()
         self.probX_givenB = Counter()
         for k in countX_givenR:
-            self.probX_givenR[k] = countX_givenR[k]/countY_R
+            self.probX_givenR[k] = countX_givenR[k]/self.countY_R
         for k in countX_givenB:
-            self.probX_givenB[k] = countX_givenB[k]/countY_B
+            self.probX_givenB[k] = countX_givenB[k]/self.countY_B
     
         pass
 
@@ -67,12 +67,12 @@ class NaiveBayes(object):
         test_probX_givenB = self.probY_B
         for word in testL:
             if self.probX_givenR[word] == 0:
-                test_probX_givenR += math.log(1/len(self.probX_givenR))
+                test_probX_givenR += math.log(1/(len(self.probX_givenR)+self.countY_R))
             else:
                 test_probX_givenR += math.log(self.probX_givenR[word])
 
             if self.probX_givenB[word] == 0:
-                test_probX_givenB += math.log(1/len(self.probX_givenB))
+                test_probX_givenB += math.log(1/(len(self.probX_givenB)+self.countY_B))
             else:
                 test_probX_givenB += math.log(self.probX_givenB[word])
                 
