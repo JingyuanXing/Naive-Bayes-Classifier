@@ -4,7 +4,7 @@ from collections import Counter
 from collections import defaultdict
 import math
 
-class NaiveBayes(object):
+class ExtendedNaiveBayes(object):
 
     def __init__(self, trainingData):
         """
@@ -186,7 +186,7 @@ if __name__ == '__main__':
     with io.open(test_txt, 'r', encoding='utf8') as f:
         test_data = f.read()
 
-    model = NaiveBayes(train_data)
+    model = ExtendedNaiveBayes(train_data)
     evaluation = model.testModel(test_data)
     print("overall accuracy: " + str(evaluation['overall accuracy'])
         + "\nprecision for red: " + str(evaluation['precision for red'])
@@ -194,7 +194,6 @@ if __name__ == '__main__':
         + "\nrecall for red: " + str(evaluation['recall for red'])
         + "\nrecall for blue: " + str(evaluation['recall for blue']))
     
-    model.estimateLogProbability(test_data.splitlines()[0])
 
 
 
