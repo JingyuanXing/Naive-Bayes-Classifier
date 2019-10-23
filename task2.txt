@@ -2,13 +2,18 @@
 2.1 When our test set only contains 18 speeches, the evaluation result may be inaccurate because the data set is too small and thus cannot capture all aspects we want to know. We could improve this by getting more testing data. These data should represent a larger variety of things. For example, we may want to get data from more candidates, instead of just 4 people; we may also want to get speeches from different years, etc. If we can't get real test data, we can also generate fake speeches base on our existing data, but still, obtaining real data is definitely a better choice. Drawbacks of this is that acquiring large amount of data may be expensive, running and storing these data can be expensive as well.
 
 
+
 2.2 Yes, some predictions are more certain than others. 
 
 This is because we make our prediction by comparing the log probability of RED and BLUE, and choose the one with greater probability as our predicted class. If the two probabilities are very close to each other, then we are not very certain about our choice; on the other hand, if the difference between the two probabilities is large, then we will be pretty certain about our choice. For those classifications that are wrong, I examined the probabilities of RED and BLUE, they are actually really really close, which definitely indicate relatively low confidence. 
 
 (Note that in addition to what we said above, we should also consider the length of training data. The above statement about certainty is true when the datasets we are talking about have equal lengths. If the lengths are different, let's say dataset 1 is very long, and dataset 2 is very short, then the probability will be smaller for dataset 1 since we have multiplied a lot more probabilities together than we did for dataset 2.)
 
-2.3 I was super surprised to see how much it has improved the performance: the accuracy for training data 1 become 1.0 (which is completely predicted correct) and the accuracy for training data 2 boosted from 0.74 to 0.92.
+
+
+2.3 In extended.py, I used "bigram" rather than "unigram" to calculate the probabilities. The idea is, our previous Naive Bayes model is based on the assumption that each words are independent of each other, which is not usually the case in real life. So I calculated the probability as such: prob(X=xi-1 xi | Y=R) = count(X=xi-1 xi and Y=R)/ count(X=xi and Y=R), and same thing for Y=B. 
+
+After implementing this, I was super surprised to see how much it has improved the performance: the accuracy for training data 1 become 1.0 (which is completely predicted correct) and the accuracy for training data 2 boosted from 0.74 to 0.92, which is a very big increase as well.
 
 
 
