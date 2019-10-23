@@ -62,7 +62,7 @@ class NaiveBayes(object):
         testL = sentence.split()
 
         # find the product of P(Y=R) * \prod{P(X=xi | Y=R)}
-        #                 and P(Y=B) * \prod{P(X=xi | Y=R)}
+        #                 and P(Y=B) * \prod{P(X=xi | Y=B)}
         test_probX_givenR = self.probY_R
         test_probX_givenB = self.probY_B
         for word in testL:

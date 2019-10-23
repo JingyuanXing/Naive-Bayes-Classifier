@@ -8,4 +8,7 @@ This is because we make our prediction by comparing the log probability of RED a
 
 (Note that in addition to what we said above, we should also consider the length of training data. The above statement about certainty is true when the datasets we are talking about have equal lengths. If the lengths are different, let's say dataset 1 is very long, and dataset 2 is very short, then the probability will be smaller for dataset 1 since we have multiplied a lot more probabilities together than we did for dataset 2.)
 
-2.3 Use bigram because words are not independent, drop punctuations such as comma, 
+2.3 I was super surprised to see how much it has improved the performance: the accuracy for training data 1 become 1.0 (which is completely predicted correct) and the accuracy for training data 2 boosted from 0.74 to 0.92.
+
+
+

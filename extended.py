@@ -14,7 +14,7 @@ class NaiveBayes(object):
 
 
         ######### step 1
-        # make trainingData into a string list list
+        ######### make trainingData into a string list list
         trainLL = []
         for line in trainingData.splitlines():
             trainLL.append(line.split())
@@ -32,7 +32,7 @@ class NaiveBayes(object):
 
 
         ######### step 2
-        # add <s> for bigram purposes
+        ######### add <s> for bigram purposes
         for line in trainLL:
             line.insert(1,"<s>")
         ######### create dictionary of each word count: count(X=xi and Y=R) 
@@ -48,7 +48,7 @@ class NaiveBayes(object):
         
 
         ######### step 3
-        # make a tuple list list of (xi-1, xi)
+        ######### make a tuple list list of (xi-1, xi)
         bigramtrainLL = []
         for line in trainLL:
             tempLine = [(line[i-1], line[i]) for i in range(2,len(line))]
@@ -63,7 +63,7 @@ class NaiveBayes(object):
             else:
                 countXprev_X_givenB += Counter(bigramtrainLL[i])
 
-
+        ######### step 4
         # create dictionary of each bigram probability: 
         # prob(X=xi-1 xi | Y=R) = count(X=xi-1 xi and Y=R)/ count(X=xi and Y=R)
         # prob(X=xi-1 xi | Y=B) = count(X=xi-1 xi and Y=B)/ count(X=xi and Y=B)
@@ -91,22 +91,22 @@ class NaiveBayes(object):
         testL.insert(0, "<s>")
         bigramtestL = [(testL[i-1], testL[i]) for i in range(1,len(testL))]
 
-        # find the product of P(Y=R) * \prod{P(X=xi | Y=R)}
-        #                 and P(Y=B) * \prod{P(X=xi | Y=R)}
+        # find the product of P(Y=R) * \prod{P(X=xi-1 xi | Y=R)}
+        #                 and P(Y=B) * \prod{P(X=xi-1 xi | Y=B)}
         test_prob_bigramX_givenR = self.probY_R
         test_prob_bigramX_givenB = self.probY_B
-        for word in testL:
-            if self.probX_givenR[word] == 0:
-                test_probX_givenR += math.log(1/(len(self.probX_givenR)+self.countY_R))
+        for currTuple in bigramtestL:
+            if self.prob_bigramX_givenR[currTuple] == 0:
+                test_prob_bigramX_givenR += math.log(1/(len(self.prob_bigramX_givenR)+self.countY_R))
             else:
-                test_probX_givenR += math.log(self.probX_givenR[word])
+                test_prob_bigramX_givenR += math.log(self.prob_bigramX_givenR[currTuple])
 
-            if self.probX_givenB[word] == 0:
-                test_probX_givenB += math.log(1/(len(self.probX_givenB)+self.countY_B))
+            if self.prob_bigramX_givenB[currTuple] == 0:
+                test_prob_bigramX_givenB += math.log(1/(len(self.prob_bigramX_givenB)+self.countY_B))
             else:
-                test_probX_givenB += math.log(self.probX_givenB[word])
+                test_prob_bigramX_givenB += math.log(self.prob_bigramX_givenB[currTuple])
                 
-        return {'red': test_probX_givenR, 'blue': test_probX_givenB}
+        return {'red': test_prob_bigramX_givenR, 'blue': test_prob_bigramX_givenB}
 
     def testModel(self, testData):
         """
